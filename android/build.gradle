@@ -16,6 +16,9 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs project(':authenticate_tencent').file('libs')
+        }
     }
 }
 
@@ -31,12 +34,6 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-    }
-
-    repositories {
-        flatDir {
-            dirs project(':authenticate_tencent').file('libs')
-        }
     }
 }
 
