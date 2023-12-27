@@ -1,0 +1,6 @@
+framework module KYCGMSDK {
+  umbrella header "KYCGMSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}
