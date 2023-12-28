@@ -1,12 +1,10 @@
 package com.mengtu.saywo.authenticate_tencent;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-
 
 import com.tencent.cloud.huiyansdkface.facelight.api.WbCloudFaceContant;
 import com.tencent.cloud.huiyansdkface.facelight.api.WbCloudFaceVerifySdk;
@@ -31,7 +29,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 /** AuthenticateTencentPlugin */
 public class AuthenticateTencentPlugin implements FlutterPlugin, MethodCallHandler,ActivityAware {
 
-  private static final String TAG = "MainActivity";
+  private static final String TAG = "AuthenticatePlugin";
   private static final String FACE_CHANNEL = "com.mengtu.saywo.authenticate";
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
@@ -84,12 +82,12 @@ public class AuthenticateTencentPlugin implements FlutterPlugin, MethodCallHandl
             FaceVerifyStatus.Mode.GRADE,
             keyLicence);
 
-    boolean isShowSuccess = config.get("showSuccessPage").equals("0") ? false : true;
-    boolean isShowFail = config.get("showFailurePage").equals("0") ? false : true;
-    boolean isRecordVideo = config.get("recordVideo").equals("0") ? false : true;
-    boolean isPlayVoice = config.get("playVoice").equals("0") ? false : true;
-    String color = config.get("theme").equals("0") ? WbCloudFaceContant.BLACK : WbCloudFaceContant.WHITE;
-    String faceVerifyCompreType = getFaceVerifyCompareType(type);
+    boolean isShowSuccess = !config.get("showSuccessPage").equals("0");
+    boolean isShowFail = !config.get("showFailurePage").equals("0");
+    boolean isRecordVideo = !config.get("recordVideo").equals("0");
+    boolean isPlayVoice = !config.get("playVoice").equals("0");
+    String color = WbCloudFaceContant.CUSTOM;
+    String faceVerifyCompareType = getFaceVerifyCompareType(type);
 
     data.putSerializable(WbCloudFaceContant.INPUT_DATA, inputData);
     //是否展示刷脸成功页面，默认展示
@@ -105,7 +103,7 @@ public class AuthenticateTencentPlugin implements FlutterPlugin, MethodCallHandl
     //设置选择的比对类型  默认为权威源对比
     //公安网纹图片比对 WbCloudFaceVerifySdk.ID_CRAD
     //默认公安网纹图片比对
-    data.putString(WbCloudFaceContant.COMPARE_TYPE, faceVerifyCompreType);
+//    data.putString(WbCloudFaceContant.COMPARE_TYPE, faceVerifyCompareType);
 
     WbCloudFaceVerifySdk.getInstance().initSdk(activity, data, new WbCloudFaceVerifyLoginListener() {
       @Override
@@ -120,33 +118,32 @@ public class AuthenticateTencentPlugin implements FlutterPlugin, MethodCallHandl
                 Log.d(TAG, "刷脸成功! Sign=" + result.getSign() + "; liveRate=" + result.getLiveRate() +
                         "; similarity=" + result.getSimilarity() + "userImageString=" + result.getUserImageString());
 
-                Map<String, String> temp = new HashMap<String, String>();
+                Map<String, String> temp = new HashMap<>();
                 temp.put("success", "1");
-                temp.put("desc", result.toString());
+                temp.put("desc", JsonHelper.toJsonString(result));
                 callbackResult.success(temp);
               } else {
+                Map<String, String> temp = new HashMap<>();
+                temp.put("success", "0");
                 WbFaceError error = result.getError();
                 if (error != null) {
-                  Log.d(TAG, "刷脸失败！domain=" + error.getDomain() + " ;code= " + error.getCode()
-                          + " ;desc=" + error.getDesc() + ";reason=" + error.getReason());
+                  temp.put("desc","刷脸失败！domain=" + error.getDomain() + " ;code= " + error.getCode() + " ;desc=" + error.getDesc() + ";reason=" + error.getReason());
+                  Log.d(TAG, "刷脸失败！domain=" + error.getDomain() + " ;code= " + error.getCode() + " ;desc=" + error.getDesc() + ";reason=" + error.getReason());
                   if (error.getDomain().equals(WbFaceError.WBFaceErrorDomainCompareServer)) {
-                    Log.d(TAG, "对比失败，liveRate=" + result.getLiveRate() +
+                    temp.put("domain", error.getDomain());
+                    Log.d(TAG, "对比失败，此时，liveRate=" + result.getLiveRate() +
                             "; similarity=" + result.getSimilarity());
                   }
                 } else {
                   Log.e(TAG, "sdk返回error为空！");
                 }
-                Map<String, String> temp = new HashMap<String, String>();
-                temp.put("success", "0");
-                temp.put("desc", result.toString());
                 callbackResult.success(temp);
               }
             } else {
               Log.e(TAG, "sdk返回result为空！");
-
-              Map<String, String> temp = new HashMap<String, String>();
+              Map<String, String> temp = new HashMap<>();
               temp.put("success", "0");
-              temp.put("desc", result.toString());
+              temp.put("desc", "返回的WbFaceVerifyResult为null");
               callbackResult.success(temp);
             }
           }
@@ -156,32 +153,26 @@ public class AuthenticateTencentPlugin implements FlutterPlugin, MethodCallHandl
       @Override
       public void onLoginFailed(WbFaceError error) {
         Log.i(TAG, "onLoginFailed!");
+        Map<String, String> temp = new HashMap<>();
+        temp.put("success", "0");
         if (error != null) {
-          Log.d(TAG, "登录失败！domain=" + error.getDomain() + " ;code= " + error.getCode()
-                  + " ;desc=" + error.getDesc() + ";reason=" + error.getReason());
+          Log.d(TAG, "登录失败！domain=" + error.getDomain() + " ;code= " + error.getCode() + " ;desc=" + error.getDesc() + ";reason=" + error.getReason());
+          temp.put("desc", error.toString());
+          temp.put("domain", error.getDomain());
         } else {
           Log.e(TAG, "sdk返回error为空！");
+          temp.put("desc", "sdk返回error为空");
         }
-
-        Map<String, String> temp = new HashMap<String, String>();
-        temp.put("success", "0");
-        temp.put("desc", error.toString());
         callbackResult.success(temp);
-
-
       }
     });
   }
 
   private String getFaceVerifyCompareType(String type) {
-    switch (type) {
-      case "idCard":
-        return WbCloudFaceContant.ID_CARD;
-      case "none":
-        return WbCloudFaceContant.NONE;
-      default:
-        return WbCloudFaceContant.ID_CARD;
+    if ("none".equals(type)) {
+      return WbCloudFaceContant.NONE;
     }
+    return WbCloudFaceContant.ID_CARD;
   }
 
 

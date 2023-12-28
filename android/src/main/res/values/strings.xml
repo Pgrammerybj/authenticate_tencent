@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">腾讯云慧眼</string>
+
+    <string name="demo_sure">确定</string>
+    <string name="demo_no_try">不试了</string>
+    <string name="demo_verify_failed">验证失败</string>
+    <string name="demo_verify_success">验证成功</string>
+    <string name="demo_quit_verify">退出验证</string>
+    <string name="demo_error_msg">请确保人脸正对框内且无遮挡</string>
+</resources>

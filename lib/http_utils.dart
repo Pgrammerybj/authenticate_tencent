@@ -46,8 +46,7 @@ Future<Map<dynamic, dynamic>> startFaceService(
     var license = Platform.isAndroid ? androidLicense : iosLicense;
     final String faceId = result['faceId'];
     if (faceId != null) {
-      final Map<dynamic, dynamic> result = await AuthenticateTencent.auth(
-          faceId, order, nonce, sign, userId, appId, license);
+      final Map<dynamic, dynamic> result = await AuthenticateTencent.auth(faceId, order, nonce, sign, userId, appId, license);
 //        final Map<dynamic, dynamic> result = await Faceplugin.auth(faceId, order, nonce, sign, userId, appId, license);
       final String success = result['success'];
       return result;
