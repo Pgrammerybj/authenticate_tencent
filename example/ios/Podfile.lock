@@ -1,5 +1,5 @@
 PODS:
-  - authenticate_tencent (0.0.1):
+  - authenticate_tencent (0.0.2):
     - Flutter
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
@@ -30,7 +30,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  authenticate_tencent: 16555fcdc85e23f85e14d02ad34b01be7dd4ce2a
+  authenticate_tencent: 112afd4b96f3f78b9679eec0a482e1e8d35f1952
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
