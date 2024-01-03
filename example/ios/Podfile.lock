@@ -30,12 +30,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  authenticate_tencent: 326f6a5623ec1ab0971daf066afdf57068553289
+  authenticate_tencent: 16555fcdc85e23f85e14d02ad34b01be7dd4ce2a
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: c2b7d76124192629287fe4c568f26453c4fcfb59
+PODFILE CHECKSUM: 897491747d597093bc2da9d6a608be9bffd1dfb6
 
 COCOAPODS: 1.14.3
